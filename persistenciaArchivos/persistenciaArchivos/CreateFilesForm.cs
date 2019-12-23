@@ -34,7 +34,11 @@ namespace persistenciaArchivos
 
         private void LimpiarInterfaz()
         {
-            NombreTextBox.Text = "";
+            EmisorTextBox.Text = "";
+            ReceptorTextBox.Text = "";
+            FechaDateTime.Text = "";
+            MonedaComboBox.Text = "";
+            InstitucionFinancieraTextBox.Text = "";
             NumeroChequeTextBox.Text = "";
             MontoTextBox.Text = "";
             DescripcionTextBox.Text = "";
@@ -45,7 +49,7 @@ namespace persistenciaArchivos
             if (InformacionEsValida())
             {
                 Cheque cheque = RellenarCheque();
-                ChequesDataGridView.Rows.Add(cheque.Nombre, cheque.Numero, cheque.Monto, cheque.Descripcion);
+                ChequesDataGridView.Rows.Add(cheque.Emisor, cheque.Receptor, cheque.Fecha,cheque.Moneda,cheque.InstitucionFinanciera, cheque.Numero, cheque.Monto, cheque.Descripcion);
             }
 
         }
@@ -54,10 +58,10 @@ namespace persistenciaArchivos
         {
             LimpiarErrorProviders();
             bool esValida = true;
-            if (NombreTextBox.Text.Length < 3)
+            if (EmisorTextBox.Text.Length < 3)
             {
                 esValida = false;
-                ErrorProvider.SetError(NombreTextBox, "Debe especificar un nombre de más de 3 caracteres");
+                ErrorProvider.SetError(EmisorTextBox, "Debe especificar un nombre de más de 3 caracteres");
             }
             if (NumeroChequeTextBox.Text.Length < 5)
             {
@@ -87,7 +91,11 @@ namespace persistenciaArchivos
         {
             return new Cheque
             {
-                Nombre = NombreTextBox.Text,
+                Emisor = EmisorTextBox.Text,
+                Receptor = ReceptorTextBox.Text,
+                Fecha =  FechaDateTime.Value,
+                Moneda = MonedaComboBox.Text,
+                InstitucionFinanciera = InstitucionFinancieraTextBox.Text,
                 Numero = NumeroChequeTextBox.Text,
                 Monto = Convert.ToDouble(MontoTextBox.Text),
                 Descripcion = DescripcionTextBox.Text,
@@ -156,7 +164,7 @@ namespace persistenciaArchivos
 
         private void LimpiarErrorProviders()
         {
-            ErrorProvider.SetError(NombreTextBox, "");
+            ErrorProvider.SetError(EmisorTextBox, "");
             ErrorProvider.SetError(NumeroChequeTextBox, "");
             ErrorProvider.SetError(MontoTextBox, "");
             ErrorProvider.SetError(DescripcionTextBox, "");
@@ -175,10 +183,15 @@ namespace persistenciaArchivos
                  
                 archivoManager.ChequesList.Add(new Cheque
                 {
-                    Nombre = ChequesDataGridView.Rows[rowIndex].Cells[0].Value.ToString(),
-                    Numero = ChequesDataGridView.Rows[rowIndex].Cells[1].Value.ToString(),
-                    Monto = Convert.ToDouble(ChequesDataGridView.Rows[rowIndex].Cells[2].Value.ToString()),
+                    Emisor = ChequesDataGridView.Rows[rowIndex].Cells[0].Value.ToString(),
+                    Receptor = ChequesDataGridView.Rows[rowIndex].Cells[1].Value.ToString(),
+                    Fecha = Convert.ToDateTime( ChequesDataGridView.Rows[rowIndex].Cells[2].Value.ToString()),
+                    Moneda = ChequesDataGridView.Rows[rowIndex].Cells[3].Value.ToString(),
+                    InstitucionFinanciera = ChequesDataGridView.Rows[rowIndex].Cells[4].Value.ToString(),
+                    Numero = ChequesDataGridView.Rows[rowIndex].Cells[5].Value.ToString(),
+                    Monto = Convert.ToDouble(ChequesDataGridView.Rows[rowIndex].Cells[6].Value.ToString()),
                     Descripcion = descripcionEncriptada,
+
                 });
             }
         }
@@ -196,5 +209,86 @@ namespace persistenciaArchivos
             }
         }
 
+        private void NombreLabel_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void FechaDateTime_ValueChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void EmisorTextBox_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void EmisorTextBox_Leave(object sender, EventArgs e)
+        {
+            
+        }
+
+        public bool ValidacionReceptor()
+        {
+            if (ReceptorTextBox.TextLength <= 2)
+            {
+                ErrorProvider.SetError(ReceptorTextBox, "No cumple la condicion");
+                return false;
+            }
+            else
+            {
+                ErrorProvider.SetError(ReceptorTextBox, "");
+                return true;
+            }
+        }
+
+        private void FechaDateTime_Leave(object sender, EventArgs e)
+        {
+            ValidacionFecha();
+        }
+
+        private bool ValidacionFecha()
+        {
+            if (FechaDateTime.Value <= System.DateTime.Now)
+            {
+                ErrorProvider.SetError(FechaDateTime, "");
+                return true;
+            }
+            else
+            {
+                ErrorProvider.SetError(FechaDateTime, "Fecha no valida");
+                return false;
+            }
+        }
+
+        private void ReceptorTextBox_Leave(object sender, EventArgs e)
+        {
+            ValidacionReceptor();
+        }
+
+        private void InstitucionFinancieraTextBox_Leave(object sender, EventArgs e)
+        {
+            ValidacionInstitucionFinanciera();
+        }
+
+        private bool ValidacionInstitucionFinanciera()
+        {
+            if (InstitucionFinancieraTextBox.TextLength < 3)
+            {
+                ErrorProvider.SetError(InstitucionFinancieraTextBox, "No cumple condicion");
+                return false;
+            }
+            else
+            {
+                ErrorProvider.SetError(InstitucionFinancieraTextBox, "");
+                return true;
+            }
+        }
     }
 }

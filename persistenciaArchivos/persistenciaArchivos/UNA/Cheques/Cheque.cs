@@ -8,9 +8,18 @@ namespace UNA.Cheques
 {
     class Cheque
     {
-        public string Nombre { get; set; }
+        public string Emisor { get; set; }
+        public string Receptor { get; set; }
+
+        public DateTime Fecha { get; set; }
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
         public string Numero { get; set; }
         public double Monto { get; set; }
+
+        public string InstitucionFinanciera { get; set; }
         public string Descripcion { get; set; }
+
+        public string Moneda { get; set; }
+
     }
 }
